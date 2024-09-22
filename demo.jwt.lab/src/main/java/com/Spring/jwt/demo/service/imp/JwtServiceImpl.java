@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.Spring.jwt.demo.model.User;
+import com.Spring.jwt.demo.repsitory.TokenRepository;
 import com.Spring.jwt.demo.service.JwtService;
 
 import io.jsonwebtoken.Claims;
@@ -22,6 +23,12 @@ public class JwtServiceImpl implements JwtService{
 
 	private  final String SECRET_KEY="d82ee56fcf9b122a2a091e4778b7115d69b756b44bc63a94532f535d9af18d13";
 
+	private  TokenRepository  tokenrepo;
+	
+	public JwtServiceImpl(TokenRepository tokenrepo) {
+		super();
+		this.tokenrepo = tokenrepo;
+	}
 	public String extractUserNamne(String token) {
 		return extractClaim(token, Claims::getSubject);
 	}
@@ -34,7 +41,9 @@ public class JwtServiceImpl implements JwtService{
 	}
 	public boolean isvalid(String token,UserDetails user) {
 		String username=extractUserNamne(token);
-		return username.equals(user.getUsername()) && !isTokenExpire(token);
+		boolean isvalidToken=tokenrepo.findByToken(token)
+				.map(t->!t.isLoggedout()).orElse(false);
+		return username.equals(user.getUsername()) && !isTokenExpire(token)&& isvalidToken;
 	}
 	public <T> T extractClaim(String token,Function<Claims, T> resolver) {
 		Claims claim=extractAllClaim(token);

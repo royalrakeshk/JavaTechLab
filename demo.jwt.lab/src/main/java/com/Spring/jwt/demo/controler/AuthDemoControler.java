@@ -12,4 +12,8 @@ public class AuthDemoControler {
 		return ResponseEntity.ok("This is from demo controler");
 	}
 
+	@GetMapping("/admin")
+		public ResponseEntity<String> getadmin(){
+			return ResponseEntity.ok("This is from admin controler");
+		}
 }

@@ -14,6 +14,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -36,6 +37,15 @@ public class User implements UserDetails{
 	
 	@Enumerated(value = EnumType.STRING)
 	private Role role;
+	
+	@OneToMany(mappedBy = "user")
+	private List<Token> tokens;
+	public List<Token> getTokens() {
+		return tokens;
+	}
+	public void setTokens(List<Token> tokens) {
+		this.tokens = tokens;
+	}
 	public Integer getId() {
 		return id;
 	}
